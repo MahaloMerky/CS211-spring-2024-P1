@@ -1,56 +1,69 @@
-// DO NOT INCLUDE THIS IMPORT WHEN SENT FOR GRADING, THIS IS HERE TO HELP YOU DEBUG THE PROGRAM STATE
-import java.util.Arrays;
-
 public class SystemWhole {
     public static String[] emergences; // To store JSON strings representing emergences
     public static Machine[] parts; // To store Machine objects directly as an array
 
     public static void main(String[] args) {
         // Sample JSON strings representing different "emergences"
-        String[] emergences = {
-                "{\"kind\": \"Humanoid\", \"bodyType\": \"physical\", \"faceType\": \"anthropomorphic\", \"reverie\": \"mechatypical\"}",
-                "{\"kind\": \"Humanoid\", \"bodyType\": \"physical\", \"faceType\": \"anthropomorphic\", \"reverie\": \"biotypical\"}",
-                "{\"kind\": \"Robot\", \"material\": \"metal\", \"function\": \"industrial\"}",
-                "{\"kind\": \"Humanoid\", \"bodyType\": \"physical\", \"faceType\": \"anthropomorphic\"}"
-        };
-
-        // Parse the emergences and set them to the SystemWhole state
-        emergencesFromPhenomena(emergences);
-        // Analyze the shapes based on the set emergences
-        reifyFrameOfReference();
-        System.out.println("Prelude of the Rise of the Machines: " + Arrays.deepToString(parts));
-        parts[0].emergeFromLimitations();
-        // Track humanoid machines and identify singularities
-        Machine[] singularities = trackSingularityMachines();
-        System.out.println("Singularities: " + Arrays.deepToString(singularities));
     }
 
-   //Visibility modifiers: public vs private
     public static void emergencesFromPhenomena(String[] emergences) {
-        //Class and Object State: static vs this
-        SystemWhole.emergences = emergences;
+        SystemWhole.emergences = emergences; //Start it off
     }
 
-   public static void reifyFrameOfReference() {
-        SystemWhole.parts= new Machine[emergences.length];
-        int i = 0; // not elegant =(
-        for (String emergence:emergences){
-            SystemWhole.parts[i++] = ShapeAnalyzer.analyze(emergence); 
+    public static void reifyFrameOfReference() {
+        SystemWhole.parts = new Machine[emergences.length]; // Take the parts and create a new machine
+        int i = 0;
+        for (String emergence : emergences) { //Loop through and separate the parts
+            SystemWhole.parts[i++] = ShapeAnalyzer.analyze(emergence);
         }
-        
     }
 
     public static boolean isHumanoid(Object[] machineProperties) {
-        throw new UnsupportedOperationException("Not implemented");
+        boolean bodyTypeMatch = false;
+        boolean faceTypeMatch = false;
+        boolean reverieMatch = false;
+
+        for (Object property : machineProperties) {
+            PartState partState = (PartState) property;
+            if (partState.getProperty().equals("bodyType") && partState.getValue().equals("physical")) {
+                bodyTypeMatch = true;
+            }
+            if (partState.getProperty().equals("faceType") && partState.getValue().equals("anthropomorphic")) {
+                faceTypeMatch = true;
+            }
+            if (partState.getProperty().equals("reverie") && partState.getValue().equals("biotypical")) {
+                reverieMatch = true;
+            }
+        }
+
+        return bodyTypeMatch && faceTypeMatch && reverieMatch;
     }
 
-    // SystemWhole's logic to determine if a Machine is humanoid and count them
     public static int identitySingularityMachines() {
-        throw new UnsupportedOperationException("Not implemented");
+        int humanoidCount = 0;
+        int singularityCount = 0;
+
+        for (Machine machine : parts) {
+            if (machine.isHumanoid()) {
+                humanoidCount++;
+            } else {
+                singularityCount++;
+            }
+        }
+
+        return singularityCount;
     }
 
     public static Machine[] trackSingularityMachines() {
-        throw new UnsupportedOperationException("Not implemented");
-    }
+        Machine[] singularities = new Machine[identitySingularityMachines()];
+        int index = 0;
 
+        for (Machine machine : parts) {
+            if (!machine.isHumanoid()) {
+                singularities[index++] = machine;
+            }
+        }
+
+        return singularities;
+    }
 }
